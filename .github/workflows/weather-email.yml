@@ -1,0 +1,29 @@
+name: Send Daily Weather Email
+
+on:
+  schedule:
+    - cron: '0 5 * * *'  # Runs at 07:00 Rwanda time (UTC+2)
+  workflow_dispatch:     # Allows manual trigger
+
+jobs:
+  send-weather:
+    runs-on: ubuntu-latest
+    env:
+      EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run weather script
+        run: python weather.py
